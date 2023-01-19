@@ -42,3 +42,11 @@ func GetBrandByID(db *sql.DB, id int) (result models.Brand, err error) {
 	}
 	return
 }
+
+func DeleteBrand(db *sql.DB, brand models.Brand) (err error) {
+	sql := "DELETE FROM brand WHERE id = $1"
+
+	errs := db.QueryRow(sql, brand.ID)
+
+	return errs.Err()
+}

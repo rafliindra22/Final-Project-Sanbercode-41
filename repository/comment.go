@@ -28,3 +28,11 @@ func GetAllComment(db *sql.DB) (result []models.CommentsPhone, count int, err er
 
 	return
 }
+
+func DeleteComment(db *sql.DB, comment models.CommentsPhone) (err error) {
+	sql := "DELETE FROM commentphone WHERE id = $1"
+
+	errs := db.QueryRow(sql, comment.ID)
+
+	return errs.Err()
+}

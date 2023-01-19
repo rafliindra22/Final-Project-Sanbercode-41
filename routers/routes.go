@@ -4,6 +4,7 @@ import (
 	"Final-Project-Sanbercode-Go-Batch-41/controllers"
 	"Final-Project-Sanbercode-Go-Batch-41/database"
 	"Final-Project-Sanbercode-Go-Batch-41/middlewares"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -36,22 +37,26 @@ func StartServer() *gin.Engine {
 	merkMiddlewareroute.Use(middlewares.AdminMiddleware())
 	merkMiddlewareroute.POST("/create", controllers.CreateBrand)
 	merkMiddlewareroute.PUT("/update/:id", controllers.UpdateBrand)
+	merkMiddlewareroute.DELETE("/delete/:id", controllers.DeleteBrand)
 
 	phoneMiddleware := router.Group("/phone")
 	phoneMiddleware.Use(middlewares.AdminMiddleware())
 	phoneMiddleware.POST("/create", controllers.CreatePhone)
 	phoneMiddleware.PUT("/update/:id", controllers.UpdatePhone)
+	phoneMiddleware.DELETE("/delete/:id", controllers.DeletePhone)
 
 	specMiddleware := router.Group("/spec")
 	specMiddleware.Use(middlewares.AdminMiddleware())
 	specMiddleware.POST("/create", controllers.CreateSpec)
 	specMiddleware.PUT("/update/:id", controllers.UpdateSpec)
+	specMiddleware.DELETE("/delete/:id", controllers.DeleteSpec)
 
 	commentMiddleware := router.Group("/comment")
 	commentMiddleware.Use(middlewares.PublicMiddleware())
 	commentMiddleware.POST("/create", controllers.CreateComment)
+	commentMiddleware.DELETE("/delete/:id", controllers.DeleteComment)
 
-	router.Run("localhost:8080")
+	router.Run(":" + os.Getenv("PORT"))
 
 	return router
 }

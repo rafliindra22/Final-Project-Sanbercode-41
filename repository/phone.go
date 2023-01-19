@@ -42,7 +42,7 @@ func GetPhoneById(db *sql.DB, id int) (result models.Phone, err error) {
 	row := db.QueryRow("SELECT * FROM phone WHERE id = $1", id)
 	err = row.Scan(&result.ID, &result.Type, &result.Year, &result.BrandID, &result.CreatedAt, &result.UpdatedAt, &result.EditorName, &result.UserID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Record Not FOund"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Record Not Found"})
 	}
 	return
 }
@@ -68,4 +68,12 @@ func GetPhonesByBrandID(db *sql.DB, phone models.Phone) (result []models.Phone, 
 		result = append(result, phone)
 	}
 	return
+}
+
+func DeletePhone(db *sql.DB, phone models.Phone) (err error) {
+	sql := "DELETE FROM phone WHERE id = $1"
+
+	errs := db.QueryRow(sql, phone.ID)
+
+	return errs.Err()
 }

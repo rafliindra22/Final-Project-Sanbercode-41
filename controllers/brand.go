@@ -53,14 +53,14 @@ func CreateBrand(c *gin.Context) {
 	data.CreatedAt = time.Now()
 	data.UpdatedAt = time.Time{}
 
-	stmt, err := db.Prepare("INSERT INTO brand (user_id, name, description) VALUES ($1,$2,$3)")
+	stmt, err := db.Prepare("INSERT INTO brand (user_id, name, description, created_at, updated_at) VALUES ($1,$2,$3,$4,$5)")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	// execute query
-	res, err := stmt.Exec(users.ID, input.Name, input.Description)
+	res, err := stmt.Exec(users.ID, input.Name, input.Description, data.CreatedAt, data.UpdatedAt)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -130,4 +130,25 @@ func GetBrandByID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+func DeleteBrand(c *gin.Context) {
+	var brand models.Brand
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id parameter"})
+		return
+	}
+
+	brand.ID = id
+
+	errs := repository.DeleteBrand(database.DbConnection, brand)
+	if errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Brand with that ID doesn't exist"})
+	}
+	c.JSON(http.StatusOK, gin.H{
+
+		"result": "Success Delete Brand",
+	})
 }

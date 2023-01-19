@@ -90,10 +90,10 @@ func GetCommentByPhoneID(db *sql.DB, comment models.CommentsPhone) (result []mod
 	return
 }
 
-func DeleteSpec(db *sql.DB, book models.Spec) (err error) {
-	sql := "DELETE FROM books WHERE id = $1"
+func DeleteSpec(db *sql.DB, spec models.Spec) (err error) {
+	sql := "DELETE FROM spec WHERE id = $1"
 
-	errs := db.QueryRow(sql, book.ID)
+	errs := db.QueryRow(sql, spec.ID)
 
 	return errs.Err()
 }

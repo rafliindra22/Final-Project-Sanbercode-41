@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -84,4 +85,25 @@ func GetAllComment(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result)
+}
+
+func DeleteComment(c *gin.Context) {
+	var comment models.CommentsPhone
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id parameter"})
+		return
+	}
+
+	comment.ID = id
+
+	errs := repository.DeleteComment(database.DbConnection, comment)
+	if errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Spec with that ID doesn't exist"})
+	}
+	c.JSON(http.StatusOK, gin.H{
+
+		"result": "Success Delete Comment",
+	})
 }

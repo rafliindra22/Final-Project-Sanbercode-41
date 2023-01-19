@@ -179,3 +179,24 @@ func GetPhonesByBrandID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, result)
 }
+
+func DeletePhone(c *gin.Context) {
+	var phone models.Phone
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id parameter"})
+		return
+	}
+
+	phone.ID = id
+
+	errs := repository.DeletePhone(database.DbConnection, phone)
+	if errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Phone with that ID doesn't exist"})
+	}
+	c.JSON(http.StatusOK, gin.H{
+
+		"result": "Success Delete Phone",
+	})
+}

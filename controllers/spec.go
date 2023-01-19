@@ -202,3 +202,24 @@ func GetSpecCommentByPhoneID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"comment": results, "spec": result})
 }
+
+func DeleteSpec(c *gin.Context) {
+	var spec models.Spec
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id parameter"})
+		return
+	}
+
+	spec.ID = id
+
+	errs := repository.DeleteSpec(database.DbConnection, spec)
+	if errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Spec with that ID doesn't exist"})
+	}
+	c.JSON(http.StatusOK, gin.H{
+
+		"result": "Success Delete Spec",
+	})
+}
